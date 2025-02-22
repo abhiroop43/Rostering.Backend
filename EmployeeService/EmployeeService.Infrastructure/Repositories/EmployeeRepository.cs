@@ -1,42 +1,38 @@
 ﻿using EmployeeService.Domain.Interfaces;
 using EmployeeService.Domain.Entities;
 using EmployeeService.Infrastructure.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace EmployeeService.Infrastructure.Repositories
 {
-    public class EmployeeRepository : IEmployeeRepository
+    public class EmployeeRepository(EmployeeDbContext context) : IEmployeeRepository
     {
-        private readonly EmployeeDbContext _context;
+        private readonly EmployeeDbContext _context = context;
 
-        public EmployeeRepository(EmployeeDbContext context)
-        {
-            _context = context;
-        }
-
-        public async Task AddAsync(Employee employee)
+        public async Task AddAsync(Employee? employee)
         {
             await _context.Employees.AddAsync(employee);
         }
 
-        public void Update(Employee employee)
+        public void Update(Employee? employee)
         {
             _context.Employees.Update(employee);
         }
 
-        public void Delete(Employee employee)
+        public void Delete(Employee? employee)
         {
             employee.IsActive = false;
             Update(employee);
         }
 
-        public Task<Employee> GetByidAsync(Guid id)
+        public async Task<Employee?> GetByIdAsync(Guid id)
         {
-            throw new NotImplementedException();
+            return await _context.Employees.FindAsync(id);
         }
 
-        public Task<IEnumerable<Employee>> GetAsync(int skip, int take)
+        public async Task<IEnumerable<Employee?>> GetAsync(int skip, int take)
         {
-            throw new NotImplementedException();
+            return await _context.Employees.Skip(skip).Take(take).ToListAsync();
         }
     }
 }

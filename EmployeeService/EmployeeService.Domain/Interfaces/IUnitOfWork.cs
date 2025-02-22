@@ -2,6 +2,8 @@
 
 public interface IUnitOfWork : IDisposable
 {
+    Task BeginTransactionAsync();
     Task<int> SaveAsync();
-    Task<int> CommitAsync();
+    Task CommitAsync();
+    Task RollBackTransactionAsync();
 }
